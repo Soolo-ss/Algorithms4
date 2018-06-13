@@ -14,25 +14,11 @@ class MergeSort
 {
 public:
     template <typename T>
-    static void sort(Iterator<T> start, Iterator<T> end)
-    {
-        Iterator<T> mid = start + (end - start) / 2;
-
-        if (mid == start || mid == end)
-            return;
-
-        sort<T>(start, mid);
-        sort<T>(mid, end);
-        merge<T>(start, mid, end);
-    }
-
-    template <typename T>
     static void sort(vector<T> vec)
     {
         vector<T> vec_aux(vec.size());
         sort(vec, vec_aux, 0, vec.size() - 1);
     }
-
 
 private:
     template <typename T>
@@ -46,73 +32,53 @@ private:
         sort(vec, vec_aux, lo, mid);
         sort(vec, vec_aux, mid + 1, hi);
         //merge
+        merge(vec, vec_aux, lo, mid, hi);
     }
 
 private:
     template <typename T>
     static void merge(vector<T>& vec, vector<T>& vec_aux, int lo, int mid, int hi)
     {
-        int left = vec
+        int lo_iter = lo;
+        int mid_iter = mid + 1;
+        int hi_iter = hi;
+
+        int push = 0;
 
         while (true)
         {
-            if (vec[lo] < vec[mid + 1])
+            if (lo_iter == mid || mid_iter == hi)
+                break;
+            if (vec[lo_iter] < vec[mid_iter + 1])
             {
-
-            }
-        }
-    }
-
-    template <typename T>
-    static void merge(Iterator<T> start, Iterator<T> mid, Iterator<T> end)
-    {
-        std::vector<T> sorted;
-
-        Iterator<T> startIter = start;
-        Iterator<T> midIter = mid;
-        Iterator<T> endIter = end;
-
-        while (true)
-        {
-            if ((*startIter) < (*midIter))
-            {
-                sorted.push_back(*startIter);
-                start++;
+                vec_aux[lo + push] = vec[lo_iter];
+                ++lo_iter;
             }
             else
             {
-                sorted.push_back(*midIter);
-                midIter++;
+                vec_aux[lo + push] = vec[mid_iter + 1];
+                ++mid_iter;
             }
 
-            if (startIter == mid || midIter == endIter)
-                break;
+            ++push;
         }
 
-        //处理额外长度
-        if (startIter == mid)
+        for( ; lo_iter <= mid; ++lo_iter)
         {
-            for( ; midIter != end; ++midIter)
-            {
-                sorted.push_back(*midIter);
-            }
-        }
-        else
-        {
-            for( ; startIter != mid; ++startIter)
-            {
-                sorted.push_back(*startIter);
-            }
+            vec_aux[lo + push] = vec[lo_iter];
+            ++push;
         }
 
-        //赋值给原始列表
-        for (auto v : sorted)
+        for( ; (mid_iter + 1) <= hi; ++mid_iter)
         {
-            (*start) = v;
-            ++start;
+            vec_aux[lo + push] = vec[mid_iter + 1];
+        }
+
+        for ( int i = lo; i <= hi; ++i)
+        {
+            vec[i] = vec_aux[i];
         }
     }
-
 };
 
 #endif //ALGORITHMS4_MERGESORT_H

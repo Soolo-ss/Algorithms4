@@ -11,7 +11,7 @@ int main()
         a.push_back(now);
     }
 
-    MergeSort::sort<int>(a.begin(), a.end());
+    MergeSort::sort<int>(a);
 
     for(auto v : a)
     {
