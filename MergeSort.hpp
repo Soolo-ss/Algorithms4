@@ -14,7 +14,7 @@ class MergeSort
 {
 public:
     template <typename T>
-    static void sort(vector<T> vec)
+    static void sort(vector<T>& vec)
     {
         vector<T> vec_aux(vec.size());
         sort(vec, vec_aux, 0, vec.size() - 1);
@@ -26,7 +26,7 @@ private:
     {
         int mid = (lo + hi) / 2;
 
-        if (mid == lo)
+        if ((hi - lo) < 1)
             return;
 
         sort(vec, vec_aux, lo, mid);
@@ -40,38 +40,39 @@ private:
     static void merge(vector<T>& vec, vector<T>& vec_aux, int lo, int mid, int hi)
     {
         int lo_iter = lo;
-        int mid_iter = mid + 1;
+        int mid_iter = ((lo + hi ) / 2) + 1;
         int hi_iter = hi;
 
         int push = 0;
 
         while (true)
         {
-            if (lo_iter == mid || mid_iter == hi)
-                break;
-            if (vec[lo_iter] < vec[mid_iter + 1])
+
+            if (vec[lo_iter] < vec[mid_iter])
             {
                 vec_aux[lo + push] = vec[lo_iter];
                 ++lo_iter;
             }
             else
             {
-                vec_aux[lo + push] = vec[mid_iter + 1];
+                vec_aux[lo + push] = vec[mid_iter];
                 ++mid_iter;
             }
 
             ++push;
-        }
 
+            if (lo_iter >= mid || mid_iter > hi)
+                break;
+        }
         for( ; lo_iter <= mid; ++lo_iter)
         {
             vec_aux[lo + push] = vec[lo_iter];
             ++push;
         }
 
-        for( ; (mid_iter + 1) <= hi; ++mid_iter)
+        for( ; mid_iter <= hi; ++mid_iter)
         {
-            vec_aux[lo + push] = vec[mid_iter + 1];
+            vec_aux[lo + push] = vec[mid_iter];
         }
 
         for ( int i = lo; i <= hi; ++i)
